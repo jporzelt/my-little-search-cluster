@@ -1,0 +1,74 @@
+version: '3.9'
+
+
+x-es-config:
+  &es-config
+  image: docker.elastic.co/elasticsearch/elasticsearch:${ES_IMAGE_TAG}
+  restart: unless-stopped
+  ulimits:
+    memlock:
+      soft: -1
+      hard: -1
+  networks:
+    - elastic-stack
+  deploy:
+    resources:
+      limits:
+        cpus: '1'
+        memory: 1G
+
+services:
+  es01:
+    <<: *es-config
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - es-data01:/usr/share/elasticsearch/data
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins:ro
+
+  es02:
+    <<: *es-config
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - es-data02:/usr/share/elasticsearch/data
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins:ro
+
+  es03:
+    <<: *es-config
+    environment:
+      - node.name=es03
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - es-data03:/usr/share/elasticsearch/data
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins:ro
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ES_IMAGE_TAG}
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es01
+    networks:
+      - elastic-stack
+
+networks:
+  elastic-stack:
+
+volumes:
+  es-data01: {}
+  es-data02: {}
+  es-data03: {}
