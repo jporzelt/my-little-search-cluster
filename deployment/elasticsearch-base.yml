@@ -12,9 +12,7 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: '1G'
+          memory: '5G'
     environment:
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    volumes:
-      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins:ro
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - xpack.security.enabled=$ELASTIC_SECURITY
