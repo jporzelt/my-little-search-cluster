@@ -14,5 +14,13 @@ services:
           cpus: '1'
           memory: '5G'
     environment:
-      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
-      - xpack.security.enabled=$ELASTIC_SECURITY
+      - xpack.security.enabled=false
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:9200 || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
