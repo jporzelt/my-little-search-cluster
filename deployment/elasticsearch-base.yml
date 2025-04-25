@@ -12,9 +12,14 @@ services:
       resources:
         limits:
           cpus: '1'
-          memory: '5G'
+          memory: '2G'
     environment:
-      - xpack.security.enabled=false
+      - cluster.name=foo
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - xpack.security.enabled=$ELASTIC_SECURITY
     healthcheck:
       test:
         [
