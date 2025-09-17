@@ -35,31 +35,39 @@ Content-Type: application/json
   "sort": [{ "dateField": "asc" }]
 }
 
-### Global agg that filters half (Apr–Jun) by date
+### Global agg, which behaves differently in ES8
 GET {{host}}/{{index}}/_search?size=0&pretty
 Content-Type: application/json
 
 {
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "dateField": {
+              "lt": "2025-04-01"
+            }
+          }
+        }
+      ]
+    }
+  },
   "aggs": {
     "all_docs": {
       "global": {},
       "aggs": {
-        "first_half": {
-          "filter": {
-            "range": {
-              "dateField": {
-                "lt": "2025-04-01"
-              }
-            }
-          },
-          "aggs": {
-            "by_month": {
-              "date_histogram": {
-                "field": "dateField",
-                "calendar_interval": "month",
-                "min_doc_count": 1
-              }
-            }
+        "by_month": {
+          "date_histogram": {
+            "field": "dateField",
+            "calendar_interval": "month",
+            "min_doc_count": 1
+          }
+        },
+        "by_month_terms": {
+          "terms": {
+            "field": "dateField",
+            "min_doc_count": 1
           }
         }
       }
