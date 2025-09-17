@@ -9,6 +9,8 @@ services:
       - cluster.initial_master_nodes=es01,es02,es03
     volumes:
       - es-data01:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
 
   es02:
     extends:

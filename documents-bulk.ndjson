@@ -1,0 +1,12 @@
+{ "index": { "_index": "{{index}}", "_id": "1" } }
+{ "dateField": "2025-01-01", "textField": "Doc Jan" }
+{ "index": { "_index": "{{index}}", "_id": "2" } }
+{ "dateField": "2025-02-01", "textField": "Doc Feb" }
+{ "index": { "_index": "{{index}}", "_id": "3" } }
+{ "dateField": "2025-03-01", "textField": "Doc Mar" }
+{ "index": { "_index": "{{index}}", "_id": "4" } }
+{ "dateField": "2025-04-01", "textField": "Doc Apr" }
+{ "index": { "_index": "{{index}}", "_id": "5" } }
+{ "dateField": "2025-05-01", "textField": "Doc May" }
+{ "index": { "_index": "{{index}}", "_id": "6" } }
+{ "dateField": "2025-06-01", "textField": "Doc Jun" }

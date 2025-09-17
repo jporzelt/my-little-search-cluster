@@ -1,0 +1,68 @@
+@host = http://localhost:9200
+@index = my-index
+
+### (Optional) Clean start: delete if exists
+DELETE {{host}}/{{index}}
+
+### Create index with mappings
+PUT {{host}}/{{index}}
+Content-Type: application/json
+
+{
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "properties": {
+      "dateField": { "type": "date" },
+      "textField": { "type": "text" }
+    }
+  }
+}
+
+### Bulk insert: 6 monthly docs over half a year (Jan–Jun 2025)
+POST {{host}}/_bulk?refresh=wait_for
+Content-Type: application/x-ndjson
+
+< documents-bulk.ndjson
+
+### Sanity check: list all docs
+GET {{host}}/{{index}}/_search?size=100&pretty
+Content-Type: application/json
+
+{
+  "query": { "match_all": {} },
+  "sort": [{ "dateField": "asc" }]
+}
+
+### Global agg that filters half (Apr–Jun) by date
+GET {{host}}/{{index}}/_search?size=0&pretty
+Content-Type: application/json
+
+{
+  "aggs": {
+    "all_docs": {
+      "global": {},
+      "aggs": {
+        "first_half": {
+          "filter": {
+            "range": {
+              "dateField": {
+                "lt": "2025-04-01"
+              }
+            }
+          },
+          "aggs": {
+            "by_month": {
+              "date_histogram": {
+                "field": "dateField",
+                "calendar_interval": "month",
+                "min_doc_count": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
