@@ -3,9 +3,11 @@
 
 ### (Optional) Clean start: delete if exists
 DELETE {{host}}/{{index}}
+Authorization: Basic ZWxhc3RpYzp0ZXN0X0hQU1ZSJnRTb0ElZXhYSGR3dg==
 
 ### Create index with mappings
 PUT {{host}}/{{index}}
+Authorization: Basic ZWxhc3RpYzp0ZXN0X0hQU1ZSJnRTb0ElZXhYSGR3dg==
 Content-Type: application/json
 
 {
@@ -22,12 +24,14 @@ Content-Type: application/json
 
 ### Bulk insert: 6 monthly docs over half a year (Jan–Jun 2025)
 POST {{host}}/_bulk?refresh=wait_for
+Authorization: Basic ZWxhc3RpYzp0ZXN0X0hQU1ZSJnRTb0ElZXhYSGR3dg==
 Content-Type: application/x-ndjson
 
 < documents-bulk.ndjson
 
 ### Sanity check: list all docs
 GET {{host}}/{{index}}/_search?size=100&pretty
+Authorization: Basic ZWxhc3RpYzp0ZXN0X0hQU1ZSJnRTb0ElZXhYSGR3dg==
 Content-Type: application/json
 
 {
@@ -37,6 +41,7 @@ Content-Type: application/json
 
 ### Global agg, which behaves differently in ES8
 GET {{host}}/{{index}}/_search?size=0&pretty
+Authorization: Basic ZWxhc3RpYzp0ZXN0X0hQU1ZSJnRTb0ElZXhYSGR3dg==
 Content-Type: application/json
 
 {
